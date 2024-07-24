@@ -64,21 +64,73 @@ const images = [
   },
 ];
 
-const galleryEl = document.querySelector(".gallery");
+// const container = document.querySelector(".gallery");
 
-const markup = images
-  .map(({ preview, original, description } = images) => {
-    return `<li class = "gallery-item" > <a class = "gallery-link" href = "${preview}" >
-   
-    <img 
-      class = "gallery-image" 
-      src = "${preview}" 
-      data-source = "${original}" 
-      alt = "${description}" 
-    /> 
-  </a> 
-</li>`;
-  })
-  .join("");
+// const createMarkup = images
+//   .map(({ preview, original, description } = images) => {
+//     return `<li class = "gallery-item" > <a class = "gallery-link" href = "${preview}" >
 
-galleryEl.insertAdjacentHTML("afterbegin", markup);
+//     <img
+//       class = "gallery-image"
+//       src = "${preview}"
+//       data-source = "${original}"
+//       alt = "${description}"
+//     />
+//   </a>
+// </li>`;
+//   })
+//   .join("");
+
+// container.insertAdjacentHTML("afterbegin", createMarkup);
+
+// function onClick(event) {
+//   event.preventDefault();
+
+//   if (event.target.tagName === "IMG") {
+//     const originalSource = event.target.dataset.source;
+//     console.log(originalSource);
+//   }
+// }
+
+// container.addEventListener("click", onClick);
+
+const container = document.querySelector(".gallery");
+
+container.insertAdjacentHTML("beforeend", createMarkup(images));
+
+container.addEventListener("click", handleImageClick);
+
+function createMarkup(arr) {
+  return arr
+    .map(
+      (image) => `
+    <li class = "gallery-item" > <a class = "gallery-link" href = "${image.preview}" >
+     <img
+       class = "gallery-image"
+       src = "${image.preview}"
+      data-source = "${image.original}"
+       alt = "${image.description}"
+     />
+  </a>
+ </li>
+  `
+    )
+    .join("");
+}
+
+function handleImageClick(event) {
+  event.preventDefault();
+
+  if (event.target === event.currentTarget) {
+    return;
+  }
+
+  const alt = event.target.getAttribute("alt");
+
+  const instance = basicLightbox.create(`
+    <img class="modal-img" src="${event.target.dataset.source}" 
+        alt="${alt}"           
+    />
+  `);
+  instance.show();
+}
